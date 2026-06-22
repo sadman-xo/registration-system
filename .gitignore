@@ -1,0 +1,14 @@
+# Python
+registration-system/venv/
+registration-system/__pycache__/
+registration-system/*.pyc
+registration-system/.env
+
+# Next.js
+registration-frontend/.next/
+registration-frontend/node_modules/
+registration-frontend/.env.local
+
+# General
+.DS_Store
+*.log
