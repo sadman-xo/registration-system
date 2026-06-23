@@ -44,6 +44,9 @@ export default function DashboardLayout({
             <Link href="/dashboard/my-courses" className="text-sm text-slate-400 hover:text-white transition-colors">
               My Courses
             </Link>
+            <Link href="/dashboard/queue" className="text-sm text-slate-400 hover:text-white transition-colors">
+              Register
+            </Link>
           </div>
 
           <div className="flex items-center gap-4">

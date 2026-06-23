@@ -8,6 +8,7 @@ registration-system/.env
 registration-frontend/.next/
 registration-frontend/node_modules/
 registration-frontend/.env.local
+registration-frontend/__pycache__/
 
 # General
 .DS_Store

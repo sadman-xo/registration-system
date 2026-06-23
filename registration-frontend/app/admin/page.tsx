@@ -10,6 +10,7 @@ interface Section {
 }
 
 export default function AdminPage() {
+  const [queueStats, setQueueStats] = useState<any>(null);
   const [courses, setCourses] = useState<Course[]>([]);
   const [sections, setSections] = useState<Record<string, Section[]>>({});
   const [newCourse, setNewCourse] = useState({ code: "", title: "", credits: 3 });
@@ -18,11 +19,30 @@ export default function AdminPage() {
   });
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
+  const fetchQueueStats = () => {
+    api.get("/queue/admin/stats").then((res) => setQueueStats(res.data));
+  };
+
+
   const fetchCourses = () => {
     api.get("/courses/").then((res) => setCourses(res.data));
   };
 
-  useEffect(() => { fetchCourses(); }, []);
+  useEffect(() => {
+    fetchCourses();
+    fetchQueueStats();
+  }, []);
+  // useEffect(() => { fetchCourses(); }, []);
+
+  const openRegistration = async () => {
+    await api.post("/queue/admin/open");
+    fetchQueueStats();
+  };
+
+  const closeRegistration = async () => {
+    await api.post("/queue/admin/close");
+    fetchQueueStats();
+  };
 
   const loadSections = async (courseId: string) => {
     const res = await api.get(`/courses/${courseId}/sections`);
@@ -115,7 +135,41 @@ export default function AdminPage() {
           </form>
         </div>
       </div>
+      {/* Queue Control Panel */}
+{queueStats && (
+  <div className="card mb-6">
+    <div className="flex items-center justify-between mb-4">
+      <h2 className="font-semibold text-white">Registration Window</h2>
+      <span className={queueStats.open ? "badge-open" : "badge-full"}>
+        {queueStats.open ? "OPEN" : "CLOSED"}
+      </span>
+    </div>
 
+    <div className="grid grid-cols-3 gap-4 mb-4">
+      <div className="bg-slate-800 rounded-lg p-3 text-center">
+        <div className="text-2xl font-bold text-white">{queueStats.queue_length}</div>
+        <div className="text-slate-500 text-xs mt-1">In Queue</div>
+      </div>
+      <div className="bg-slate-800 rounded-lg p-3 text-center">
+        <div className="text-2xl font-bold text-white">{queueStats.processing}</div>
+        <div className="text-slate-500 text-xs mt-1">Processing</div>
+      </div>
+      <div className="bg-slate-800 rounded-lg p-3 text-center">
+        <div className="text-2xl font-bold text-white">{queueStats.batch_size}</div>
+        <div className="text-slate-500 text-xs mt-1">Batch Size</div>
+      </div>
+    </div>
+
+    <div className="flex gap-3">
+      <button onClick={openRegistration} className="btn-primary flex-1">
+        Open Registration
+      </button>
+      <button onClick={closeRegistration} className="btn-danger flex-1">
+        Close Registration
+      </button>
+    </div>
+  </div>
+)}
       {/* Course list */}
       <div>
         <h2 className="font-semibold text-white mb-4">All Courses ({courses.length})</h2>
