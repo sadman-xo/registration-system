@@ -5,6 +5,7 @@ registration-system/*.pyc
 registration-system/.env
 
 # Next.js
+registration-frontend/venv/
 registration-frontend/.next/
 registration-frontend/node_modules/
 registration-frontend/.env.local
